@@ -1,0 +1,32 @@
+pythonic.str.startswith(prefix: String, s: String): Bool
+  case prefix:
+    | nil => Bool.true;
+    | cons => case s:
+      | nil => Bool.false;
+      | cons => case U16.eql(prefix.head, s.head):
+        | true => pythonic.str.startswith(prefix.tail, s.tail);
+        | flase => Bool.false;
+        ;
+      ;
+
+
+pythonic.str.startswith.test0: The(_, Bool.true)
+  The.value<>(pythonic.str.startswith("", "x"))
+
+pythonic.str.startswith.test2: The(_, Bool.false)
+  The.value<>(pythonic.str.startswith("x", ""))
+
+pythonic.str.startswith.test3: The(_, Bool.true)
+  The.value<>(pythonic.str.startswith("x", "x"))
+
+pythonic.str.startswith.test4: The(_, Bool.true)
+  The.value<>(pythonic.str.startswith("xy", "xy"))
+
+pythonic.str.startswith.test5: The(_, Bool.true)
+  The.value<>(pythonic.str.startswith("xy", "xyz"))
+
+pythonic.str.startswith.test6: The(_, Bool.false)
+  The.value<>(pythonic.str.startswith("xyz", "xy"))
+
+pythonic.str.startswith.test7: The(_, Bool.false)
+  The.value<>(pythonic.str.startswith("xyz", "xy!"))

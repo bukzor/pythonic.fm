@@ -1,0 +1,19 @@
+// WIP: this "splitc" works only with one-character separators
+pythonic.str.splitc(c: Char, xs: String): List(String)
+    case xs:
+    | nil => List.nil<String>;
+    | cons => case U16.eql(xs.head, c):
+          | true => List.cons<String>("", pythonic.str.splitc(c, xs.tail));
+          | false =>
+            case pythonic.str.splitc(c, xs.tail) as split:
+            | nil => [String.cons(xs.head, String.nil)];
+            | cons => List.cons<>(String.cons(xs.head, split.head),  split.tail);
+      ;
+    ;
+
+
+pythonic.str.splitc.example2 :  _
+  pythonic.str.splitc('x', "axb")
+
+pythonic.str.splitc.example: _
+  pythonic.str.splitc('x', "ab")

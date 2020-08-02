@@ -1,0 +1,32 @@
+#!/bin/bash
+# Run a Homebrew command (and install it, if necessary).
+# See https://brew.sh/
+for brew in \
+    ~/prefix/brew/bin/brew \
+    ~/.linuxbrew/bin/brew \
+    ~/.linuxbrew/Homebrew/bin/brew \
+    /home/linuxbrew/.linuxbrew/bin/brew;
+do
+  if [ -x "$brew" ]; then
+    exec "$brew" "$@"
+  fi
+done
+
+echo 'Could not find a homebrew installation!'
+read -p 'Install now? [yN] '
+if [[ "$REPLY" =~ ^[Yy] ]]; then
+  OS="$(uname -s)"
+  case "$OS" in
+  Linux)
+    # https://docs.brew.sh/Homebrew-on-Linux#debian-or-ubuntu
+    sudo apt-get install build-essential curl file git
+
+    # https://brew.sh/
+    eval "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    ;;
+  *) echo "TODO: $OS support.";;
+  esac
+
+  # Retry.
+  exec "$0" "$@"
+fi
