@@ -26,11 +26,11 @@ pythonic.str.split.example3 : _
   pythonic.str.split("", "abc")
 
 pythonic.str.split.example3.1 : _
-  ["a", "b", "c"]
+  ["a", "b", "c", ""]
 
 /// Fails, but why?  https://gist.github.com/bukzor/008b60cc5240eea781ba5265ea758556
-/// pythonic.str.split.test3 : The(_, ["a", "b", "c"])
-///   The.value<>(pythonic.str.split("", "abc"))
+pythonic.str.split.test3 : The(_, ["a", "b", "c", ""])
+  The.value<>(pythonic.str.split("", "abc"))
 
 pythonic.str.split.test4 : The(_, ["a", "c"])
  The.value<>(pythonic.str.split("b", "abc"))
