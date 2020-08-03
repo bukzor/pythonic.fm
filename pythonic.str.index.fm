@@ -1,0 +1,13 @@
+pythonic.str.index(i: Int, s: String): Nat
+  let p = Int.toNat(i)
+  get p.fst p.snd = p
+  case p.fst: // true is negative, false otherwise
+  | true => Nat.sub(String.length(s), p.snd);
+  | false => p.snd;
+
+
+pythonic.str.index.test0: The(Nat, 2)
+  The.value<>(pythonic.str.index(Int.new(2, 0), "foobar"))
+
+pythonic.str.index.test1: The(Nat, 4)
+  The.value<>(pythonic.str.index(Int.new(0, 2), "foobar"))

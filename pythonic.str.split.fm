@@ -8,7 +8,7 @@ pythonic.str.split(sep: String, xs: String): List(String)
       ;
     | false =>
       case pythonic.str.split(sep, xs.tail) as split:
-      | nil => [String.cons(xs.head, String.nil)];
+      | nil => List.nil<>;  // FIXME: mark this impossible
       | cons => List.cons<>(String.cons(xs.head, split.head),  split.tail);
       ;
     ;
@@ -47,8 +47,11 @@ pythonic.str.split.test6 : The(_, ["", ""])
 pythonic.str.split.test7 : The(_, ["", "", ""])
   The.value<>(pythonic.str.split("abc", "abcabc"))
 
+pythonic.str.split.example8.1 : _
+  pythonic.str.split("abc", "abcxabcy")
+
 pythonic.str.split.test8 : The(_, ["", "x", "y"])
-  The.value<>(pythonic.str.split("abc", "abcxabcy"))
+  The.value<>(pythonic.str.split.example8.1)
 
 pythonic.str.split.test9 : The(_, ["foo", "bar"])
   The.value<>(pythonic.str.split("x", "fooxbar"))
