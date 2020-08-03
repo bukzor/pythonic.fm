@@ -4,14 +4,14 @@
 if [[ "$-" == *i* ]]; then
   exec >&2
   echo "error: This script must not be sourced: $0"
-  exit 1
+  return 1
 fi
 
 set -euo pipefail
 HERE="$(readlink -f "$(dirname "$0")")"
-FORMALITY_HOME="${FORMALITY_HOME:-$PWD/Formality}"
+FORMALITY_PREFIX="${FORMALITY_PREFIX:-$PWD/share}"
 
-export PATH="$PWD/Formality/node_modules/.bin:$PATH"
+export PATH="$FORMALITY_PREFIX/Formality/node_modules/.bin:$PATH"
 export PS1="$(
   grep -az '^PS1=.*$' /proc/$PPID/environ |
     tr -d '\0' |
@@ -19,16 +19,21 @@ export PS1="$(
   ;
 )"
 
-if ! [ -d "$FORMALITY_HOME" ]; then
-  git clone https://github.com/moonad/Formality.git "$FORMALITY_HOME"
+set -x
+if ! [[ -d "$FORMALITY_PREFIX/Formality" ]]; then
+  git clone https://github.com/moonad/Formality.git "$FORMALITY_PREFIX/Formality"
+else
+  git -C "$FORMALITY_PREFIX/Formality" pull --ff
+fi
+if ! [[ -d "$FORMALITY_PREFIX/moonad" ]]; then
+  git clone https://github.com/moonad/moonad.git "$FORMALITY_PREFIX/moonad"
+else
+  git -C "$FORMALITY_PREFIX/moonad" pull --ff
 fi
 
-cd "$FORMALITY_HOME"
 "$HERE/brew" install yarn
-set +x
-eval "$("$HERE/brew" shellenv)"
-yarn add ./javascript
-cd -
+set +x; eval "$(set -x; "$HERE/brew" shellenv; echo set -x)"
+yarn --cwd "$FORMALITY_PREFIX/Formality" add ./javascript
 
 if [[ "$@" ]]; then
   exec "$@"

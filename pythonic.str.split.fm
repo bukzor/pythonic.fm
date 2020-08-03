@@ -1,19 +1,55 @@
-// WIP: this "splitc" works only with one-character separators
-pythonic.str.splitc(c: Char, xs: String): List(String)
-    case xs:
-    | nil => List.nil<String>;
-    | cons => case U16.eql(xs.head, c):
-          | true => List.cons<String>("", pythonic.str.splitc(c, xs.tail));
-          | false =>
-            case pythonic.str.splitc(c, xs.tail) as split:
-            | nil => [String.cons(xs.head, String.nil)];
-            | cons => List.cons<>(String.cons(xs.head, split.head),  split.tail);
+pythonic.str.split(sep: String, xs: String): List(String)
+  case xs:
+  | nil => [String.nil];
+  | cons => case pythonic.str.startswith(sep, xs):
+    | true => case sep:
+      | nil => List.cons<String>(String.cons(xs.head, String.nil), pythonic.str.split(sep, xs.tail));
+      | cons => List.cons<String>("", pythonic.str.split(sep, String.drop(String.length(sep), xs)));
+      ;
+    | false =>
+      case pythonic.str.split(sep, xs.tail) as split:
+      | nil => [String.cons(xs.head, String.nil)];
+      | cons => List.cons<>(String.cons(xs.head, split.head),  split.tail);
       ;
     ;
 
+pythonic.str.split.test0 : The(_, [""])
+  The.value<>(pythonic.str.split("", ""))
 
-pythonic.str.splitc.example2 :  _
-  pythonic.str.splitc('x', "axb")
+pythonic.str.split.test1 : The(_, [""])
+  The.value<>(pythonic.str.split("xyz", ""))
 
-pythonic.str.splitc.example: _
-  pythonic.str.splitc('x', "ab")
+pythonic.str.split.test2 : The(_, ["", "c"])
+  The.value<>(pythonic.str.split("ab", "abc"))
+
+pythonic.str.split.example3 : _
+  pythonic.str.split("", "abc")
+
+pythonic.str.split.example3.1 : _
+  ["a", "b", "c"]
+
+/// Fails, but why?  https://gist.github.com/bukzor/008b60cc5240eea781ba5265ea758556
+/// pythonic.str.split.test3 : The(_, ["a", "b", "c"])
+///   The.value<>(pythonic.str.split("", "abc"))
+
+pythonic.str.split.test4 : The(_, ["a", "c"])
+ The.value<>(pythonic.str.split("b", "abc"))
+
+pythonic.str.split.example5 : _
+  pythonic.str.split("bc", "abc")
+
+pythonic.str.split.test5 : The(_, ["a", ""])
+  The.value<>(pythonic.str.split("bc", "abc"))
+
+pythonic.str.split.test6 : The(_, ["", ""])
+  The.value<>(pythonic.str.split("abc", "abc"))
+
+pythonic.str.split.test7 : The(_, ["", "", ""])
+  The.value<>(pythonic.str.split("abc", "abcabc"))
+
+pythonic.str.split.test8 : The(_, ["", "x", "y"])
+  The.value<>(pythonic.str.split("abc", "abcxabcy"))
+
+pythonic.str.split.test9 : The(_, ["foo", "bar"])
+  The.value<>(pythonic.str.split("x", "fooxbar"))
+

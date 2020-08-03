@@ -1,0 +1,10 @@
+pythonic.str.slice(from: Int, to: Int, s: String): String
+  let from_n = pythonic.str.index(from, s)
+  let to_n   = pythonic.str.index(to, s)
+  String.slice(from_n, to_n, s)
+
+pythonic.str.slice.test0: The(String, "x")
+  The.value<>(pythonic.str.slice(Int.0, Int.1, "x"))
+
+pythonic.str.slice.test1: The(String, "bc")
+  The.value<>(pythonic.str.slice(Int.1, Int.new(0, 1), "abcd"))
